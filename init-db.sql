@@ -8,11 +8,29 @@ CREATE TABLE accounts (
     credit_limit INTEGER
 );
 
+DROP TABLE IF EXISTS account_history;
+CREATE TABLE account_history (
+    id INTEGER PRIMARY KEY,
+    account_number INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    event VARCHAR NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
 ALTER TABLE accounts ADD CONSTRAINT verify_type
 CHECK (type IN ('checking', 'savings', 'credit'));
 
+ALTER TABLE account_history ADD CONSTRAINT verify_event
+CHECK (event IN ('withdraw', 'deposit'));
+
+CREATE INDEX idx_account_number
+ON account_history(account_number);
+
+CREATE INDEX idx_created_at
+ON account_history(created_at);
+
 -- LOAD DATAS
-INSERT INTO accounts 
+INSERT INTO accounts
     (account_number, name, amount, type, credit_limit)
 VALUES
     (1, 'Johns Checking', 1000, 'checking', NULL),

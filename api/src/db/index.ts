@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { config, dialect } from "../config/db.config";
 import Account from "../models/account.model";
+import AccountHistory from "../models/account-history.model";
 
 class Database {
   public sequelize: Sequelize | undefined;
@@ -22,7 +23,7 @@ class Database {
         acquire: config.pool.acquire,
         idle: config.pool.idle
       },
-      models: [Account]
+      models: [Account, AccountHistory]
     });
 
     await this.sequelize
