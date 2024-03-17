@@ -3,7 +3,6 @@ node_modules
 package-lock.json
 *.log
 *.gz
-dist
 
 # Coveralls
 .nyc_output
@@ -11,6 +10,10 @@ coverage
 
 # Benchmarking
 benchmarks/graphs
+
+# Build
+dist
+.env
 
 # ignore additional files using core.excludesFile
 # https://git-scm.com/docs/gitignore

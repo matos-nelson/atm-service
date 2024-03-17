@@ -6,17 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "npm run build && node dist/server.js"
+    "start": "cp ../.env . && npm run build && node dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.3",
-    "typescript": "^5.4.2"
+    "pg": "^8.11.3",
+    "sequelize": "^6.37.1",
+    "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.28"
+    "@types/node": "^20.11.28",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
   }
 }
