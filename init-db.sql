@@ -10,7 +10,7 @@ CREATE TABLE accounts (
 
 DROP TABLE IF EXISTS account_history;
 CREATE TABLE account_history (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     account_number INTEGER NOT NULL,
     amount INTEGER NOT NULL,
     event VARCHAR NOT NULL,

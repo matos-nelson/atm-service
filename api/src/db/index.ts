@@ -7,10 +7,6 @@ class Database {
   public sequelize: Sequelize | undefined;
 
   constructor() {
-    this.connectToDatabase();
-  }
-
-  private async connectToDatabase() {
     this.sequelize = new Sequelize({
       database: config.DB,
       username: config.USER,
@@ -21,13 +17,14 @@ class Database {
         max: config.pool.max,
         min: config.pool.min,
         acquire: config.pool.acquire,
-        idle: config.pool.idle
+        idle: config.pool.idle,
       },
-      models: [Account, AccountHistory]
+      models: [Account, AccountHistory],
     });
+  }
 
-    await this.sequelize
-      .authenticate()
+  public async connectToDatabase() {
+    await this.sequelize!.authenticate()
       .then(() => {
         console.log("Connection has been established successfully.");
       })

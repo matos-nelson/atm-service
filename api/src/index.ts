@@ -16,6 +16,7 @@ export default class Server {
 
   private syncDatabase(): void {
     const db = new Database();
+    db.connectToDatabase();
     db.sequelize?.sync();
   }
 }

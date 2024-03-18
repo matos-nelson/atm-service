@@ -10,7 +10,22 @@ class AccountRoutes {
   }
 
   intializeRoutes() {
-    this.router.get("/:accountNumber", this.accountController.getAccountDetails);
+    this.router.get(
+      "/balance/:accountNumber",
+      this.accountController.getAccountDetails
+    );
+    this.router.patch(
+      "/checking/withdraw",
+      this.accountController.checkingWithdraw
+    );
+    this.router.patch(
+      "/saving/withdraw",
+      this.accountController.savingWithdraw
+    );
+    this.router.patch(
+      "/credit/withdraw",
+      this.accountController.creditWithdraw
+    );
   }
 }
 
