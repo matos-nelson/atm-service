@@ -9,7 +9,6 @@ import { AccountType } from "../enums/account-type.enum";
 
 class AccountService {
   readonly WITHDRAWAL_DAILY_LIMIT = 400;
-  readonly WITHDRAWAL_TRANSACTION_LIMIT = 200;
 
   async getAccountDetails(
     accountNumber: number
@@ -31,19 +30,17 @@ class AccountService {
     withdrawal: Withdrawal,
     type: string
   ): Promise<WithdrawalResponse> {
+
     const account = await accountRepository.findByAccountNumber(
       withdrawal.accountNumber
     );
+
     if (!account) {
       throw new Error("Could Not Find Account");
     }
 
     if (account.type !== type) {
       return new WithdrawalResponse("Invalid Type Given", null);
-    }
-
-    if (withdrawal.amount > this.WITHDRAWAL_TRANSACTION_LIMIT) {
-      return new WithdrawalResponse("Transaction Limit Reached", null);
     }
 
     const totalWithdrew = await accountHistoryRepository.findTotalAmount(
@@ -71,13 +68,10 @@ class AccountService {
   }
 
   async withdrawCredit(withdrawal: Withdrawal): Promise<WithdrawalResponse> {
-    if (withdrawal.amount > this.WITHDRAWAL_TRANSACTION_LIMIT) {
-      return new WithdrawalResponse("Transaction Limit Reached", null);
-    }
-
     const account = await accountRepository.findByAccountNumber(
       withdrawal.accountNumber
     );
+
     if (!account) {
       throw new Error("Could Not Find Account");
     }

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import accountService from "../services/account.service";
 import { Withdrawal } from "../dto/withdrawal.dto";
 import { AccountType } from "../enums/account-type.enum";
+import { validationResult } from "express-validator";
 
 export default class AccountController {
   async getAccountDetails(req: Request, res: Response): Promise<Response> {
@@ -23,6 +24,11 @@ export default class AccountController {
   }
 
   async checkingWithdraw(req: Request, res: Response): Promise<Response> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors);
+    }
+
     try {
       const withdrawal: Withdrawal = req.body;
 
@@ -42,6 +48,11 @@ export default class AccountController {
   }
 
   async savingWithdraw(req: Request, res: Response): Promise<Response> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors);
+    }
+
     try {
       const withdrawal: Withdrawal = req.body;
       const withdrawalResponse = await accountService.withdrawFunds(
@@ -60,6 +71,11 @@ export default class AccountController {
   }
 
   async creditWithdraw(req: Request, res: Response): Promise<Response> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors);
+    }
+
     try {
       const withdrawal: Withdrawal = req.body;
       const withdrawalResponse = await accountService.withdrawCredit(
