@@ -2,6 +2,7 @@ import { Router } from "express";
 import AccountController from "../controllers/account.controller";
 import { validationResult } from "express-validator";
 import { withdrawalValidator } from "../validators/withdrawal.validator";
+import { depositValidator } from "../validators/deposit.validator";
 
 class AccountRoutes {
   router = Router();
@@ -30,6 +31,16 @@ class AccountRoutes {
       "/credit/withdraw",
       withdrawalValidator,
       this.accountController.creditWithdraw
+    );
+    this.router.patch(
+      "/deposit",
+      depositValidator,
+      this.accountController.depositFunds
+    );
+    this.router.patch(
+      "/credit/deposit",
+      depositValidator,
+      this.accountController.depositCredit
     );
   }
 }

@@ -3,6 +3,7 @@ import accountService from "../services/account.service";
 import { Withdrawal } from "../dto/withdrawal.dto";
 import { AccountType } from "../enums/account-type.enum";
 import { validationResult } from "express-validator";
+import { Deposit } from "../dto/deposit.dto";
 
 export default class AccountController {
   async getAccountDetails(req: Request, res: Response): Promise<Response> {
@@ -87,7 +88,45 @@ export default class AccountController {
       console.log(err);
       return res.status(500).send({
         message:
-          "Some error occurred while processing saving withdrawal request.",
+          "Some error occurred while processing credit withdrawal request.",
+      });
+    }
+  }
+
+  async depositFunds(req: Request, res: Response): Promise<Response> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors);
+    }
+
+    try {
+      const deposit: Deposit = req.body;
+      const depositResponse = await accountService.depositFunds(deposit);
+
+      return res.status(200).send(depositResponse);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send({
+        message: "Some error occurred while processing deposit request.",
+      });
+    }
+  }
+
+  async depositCredit(req: Request, res: Response): Promise<Response> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors);
+    }
+
+    try {
+      const deposit: Deposit = req.body;
+      const depositResponse = await accountService.depositCredit(deposit);
+
+      return res.status(200).send(depositResponse);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send({
+        message: "Some error occurred while processing deposit credit request.",
       });
     }
   }

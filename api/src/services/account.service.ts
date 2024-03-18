@@ -6,6 +6,8 @@ import { WithdrawalResponse } from "../dto/withdrawl-reponse.dto";
 import AccountHistory from "../models/account-history.model";
 import { AccountEvent } from "../enums/account-event.enum";
 import { AccountType } from "../enums/account-type.enum";
+import { Deposit } from "../dto/deposit.dto";
+import { DepositResponse } from "../dto/deposit-response.dto";
 
 class AccountService {
   readonly WITHDRAWAL_DAILY_LIMIT = 400;
@@ -30,7 +32,6 @@ class AccountService {
     withdrawal: Withdrawal,
     type: string
   ): Promise<WithdrawalResponse> {
-
     const account = await accountRepository.findByAccountNumber(
       withdrawal.accountNumber
     );
@@ -40,7 +41,7 @@ class AccountService {
     }
 
     if (account.type !== type) {
-      return new WithdrawalResponse("Invalid Type Given", null);
+      throw new Error("Invalid Account Type Given");
     }
 
     const totalWithdrew = await accountHistoryRepository.findTotalAmount(
@@ -77,7 +78,7 @@ class AccountService {
     }
 
     if (account.type !== AccountType.Credit) {
-      return new WithdrawalResponse("Invalid Type Given", null);
+      throw new Error("Invalid Account Type");
     }
 
     const totalWithdrew = await accountHistoryRepository.findTotalAmount(
@@ -106,6 +107,47 @@ class AccountService {
       "Withdraw processed successfully.",
       totalCredit
     );
+  }
+
+  async depositFunds(deposit: Deposit): Promise<DepositResponse> {
+    const account = await accountRepository.findByAccountNumber(
+      deposit.accountNumber
+    );
+
+    if (!account) {
+      throw new Error("Could Not Find Account");
+    }
+
+    if (account.type === AccountType.Credit) {
+      throw new Error("Invalid Account Type");
+    }
+
+    const balance = deposit.amount + account.amount!;
+    await accountRepository.updateAmount(deposit.accountNumber, balance);
+
+    return new DepositResponse("Deposit processed successfully.", balance);
+  }
+
+  async depositCredit(deposit: Deposit): Promise<DepositResponse> {
+    const account = await accountRepository.findByAccountNumber(
+      deposit.accountNumber
+    );
+
+    if (!account) {
+      throw new Error("Could Not Find Account");
+    }
+
+    if (account.type !== AccountType.Credit) {
+      throw new Error("Invalid Account Type");
+    }
+
+    const balance = account.amount! + deposit.amount;
+    if (balance > 0) {
+      return new DepositResponse("Depositing over balanced owed", null);
+    }
+
+    await accountRepository.updateAmount(deposit.accountNumber, balance);
+    return new DepositResponse("Deposit processed successfully.", balance);
   }
 }
 
