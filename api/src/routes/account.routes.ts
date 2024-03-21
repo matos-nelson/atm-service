@@ -14,7 +14,7 @@ class AccountRoutes {
 
   intializeRoutes() {
     this.router.get(
-      "/balance/:accountNumber",
+      "/details/:accountNumber",
       this.accountController.getAccountDetails
     );
     this.router.patch(
@@ -23,7 +23,7 @@ class AccountRoutes {
       this.accountController.checkingWithdraw
     );
     this.router.patch(
-      "/saving/withdraw",
+      "/savings/withdraw",
       withdrawalValidator,
       this.accountController.savingWithdraw
     );
