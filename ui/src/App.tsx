@@ -121,7 +121,6 @@ function App() {
             </label>
           </div>
         )}
-        <p>Selected option: {selectedOption}</p>
       </div>
       <form>
         <label>
