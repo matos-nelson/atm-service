@@ -50,7 +50,19 @@ class AccountService {
     );
 
     if (totalWithdrew >= this.WITHDRAWAL_DAILY_LIMIT) {
-      return new WithdrawalResponse("Daily Limit Reached", null);
+      return new WithdrawalResponse("Daily Limit Reached.", null);
+    }
+
+    if (+totalWithdrew + +withdrawal.amount > this.WITHDRAWAL_DAILY_LIMIT) {
+      const totalAvailable = this.WITHDRAWAL_DAILY_LIMIT - totalWithdrew;
+      return new WithdrawalResponse(
+        "Could not withdraw " +
+          withdrawal.amount +
+          ". Withdraw limit remaining for day is " +
+          totalAvailable +
+          ".",
+        null
+      );
     }
 
     if (withdrawal.amount > account.amount!) {
@@ -141,9 +153,13 @@ class AccountService {
       throw new Error("Invalid Account Type");
     }
 
+    if (account.amount! === 0) {
+      return new DepositResponse("No balance owed.", null);
+    }
+
     const balance = account.amount! + deposit.amount;
     if (balance > 0) {
-      return new DepositResponse("Depositing over balanced owed", null);
+      return new DepositResponse("Depositing over balanced owed.", null);
     }
 
     await accountRepository.updateAmount(deposit.accountNumber, balance);

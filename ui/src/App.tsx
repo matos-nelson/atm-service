@@ -7,6 +7,7 @@ import {
 } from "./service/atm-service";
 import "./App.css";
 import { AccountDetails } from "./dto/account-details";
+import { AxiosError } from "axios";
 
 function App() {
   const DEPOSIT = "deposit";
@@ -57,10 +58,32 @@ function App() {
       } else if (selectedOption === DEPOSIT) {
         await processDeposit();
       }
+      resetForm();
     } catch (e) {
-      window.alert(e);
+      if (e instanceof AxiosError) {
+        if (e.response?.status === 400) {
+          let message = "";
+          e.response.data.errors.forEach(
+            (error: any) => (message += error.msg)
+          );
+          window.alert(message);
+        } else {
+          if (e.response?.data.message) {
+            window.alert(e.response.data.message);
+          } else {
+            window.alert("Error Processing Request");
+          }
+        }
+      }
     }
   };
+
+  function resetForm(): void {
+    setAccountNumber(0);
+    setAmount(0);
+    setAccountType(CHECKING);
+    setSelectedOption(VIEW_BALANCE);
+  }
 
   async function displayAccountBalance(): Promise<void> {
     const accountDetails: AccountDetails = await getAccountDetails(
@@ -69,6 +92,8 @@ function App() {
 
     if (accountDetails) {
       window.alert("Balance: " + accountDetails.amount);
+    } else {
+      window.alert("No Account Found");
     }
   }
 
